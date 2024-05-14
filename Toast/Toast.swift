@@ -526,16 +526,17 @@ public extension UIView {
         
         // MARK: Right View
         
+        let rightViewWidth = style.rightView?.frame.width ?? 0.0
+        let rightViewHeight = style.rightView?.frame.height ?? 0.0
+        
         var rightViewRect = CGRect.zero
         
         if let rightView = style.rightView {
             rightViewRect.origin.x = longerX + longerWidth + style.horizontalPadding
-            rightViewRect.origin.y = style.verticalPadding
+            rightViewRect.origin.y = style.verticalPadding + (((wrapperHeight - rightViewHeight) / 2) - style.verticalPadding) / 2
             rightViewRect.size.width = rightView.frame.width
             rightViewRect.size.height = rightView.frame.height
         }
-        
-        let rightViewWidth = style.rightView?.frame.width ?? 0.0
         
         if rightViewWidth > 0 {
             wrapperWidth += rightViewWidth + style.horizontalPadding
