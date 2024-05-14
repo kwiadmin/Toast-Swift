@@ -519,10 +519,27 @@ public extension UIView {
         
         let longerWidth = max(titleRect.size.width, messageRect.size.width)
         let longerX = max(titleRect.origin.x, messageRect.origin.x)
-        let wrapperWidth = max((imageRect.size.width + (style.horizontalPadding * 2.0)), (longerX + longerWidth + style.horizontalPadding))
+        var wrapperWidth = max((imageRect.size.width + (style.horizontalPadding * 2.0)), (longerX + longerWidth + style.horizontalPadding))
         
         let textMaxY = messageRect.size.height <= 0.0 && titleRect.size.height > 0.0 ? titleRect.maxY : messageRect.maxY
         let wrapperHeight = max((textMaxY + style.verticalPadding), (imageRect.size.height + (style.verticalPadding * 2.0)))
+        
+        // MARK: Right View
+        
+        var rightViewRect = CGRect.zero
+        
+        if let rightView = style.rightView {
+            rightViewRect.origin.x = longerX + longerWidth + style.horizontalPadding
+            rightViewRect.origin.y = style.verticalPadding
+            rightViewRect.size.width = rightView.frame.width
+            rightViewRect.size.height = rightView.frame.height
+        }
+        
+        let rightViewWidth = style.rightView?.frame.width ?? 0.0
+        
+        if rightViewWidth > 0 {
+            wrapperWidth += rightViewWidth + style.horizontalPadding
+        }
         
         wrapperView.frame = CGRect(x: 0.0, y: 0.0, width: wrapperWidth, height: wrapperHeight)
         
@@ -540,6 +557,12 @@ public extension UIView {
         
         if let imageView = imageView {
             wrapperView.addSubview(imageView)
+        }
+        
+        if let rightView = style.rightView {
+            rightViewRect.size.width = rightViewWidth
+            rightView.frame = rightViewRect
+            wrapperView.addSubview(rightView)
         }
         
         return wrapperView
@@ -562,6 +585,8 @@ public extension UIView {
 public struct ToastStyle {
 
     public init() {}
+    
+    public var rightView: UIView?
     
     /**
      The background color. Default is `.black` at 80% opacity.
